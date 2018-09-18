@@ -205,14 +205,12 @@ if [[ ${HOST} =~ .*darwin.* ]]; then
 
     echo 'Configuring...'
     ./configure -prefix $PREFIX \
-                -sysroot ${CONDA_BUILD_SYSROOT} \
                 -libdir $PREFIX/lib \
                 -bindir $PREFIX/bin \
                 -headerdir $PREFIX/include/qt \
                 -archdatadir $PREFIX \
                 -datadir $PREFIX \
                 -L $PREFIX/lib \
-                -F $CONDA_BUILD_SYSROOT/System/Library/Frameworks \
                 -I $PREFIX/include \
                 -R $PREFIX/lib \
                 -release \
