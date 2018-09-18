@@ -7,6 +7,8 @@ chmod +x configure
 # Let Qt set its own flags and vars
 for x in OSX_ARCH CFLAGS CXXFLAGS LDFLAGS
 do
+    val=$(eval echo "\$$x")
+    echo "OLD ${x}=${val}"
     unset $x
 done
 
@@ -173,13 +175,13 @@ if [[ ${HOST} =~ .*darwin.* ]]; then
     cp "${RECIPE_DIR}"/xcrun .
     cp "${RECIPE_DIR}"/xcodebuild .
     # Some test runs 'clang -v', but I do not want to add it as a requirement just for that.
-    ln -s "${CXX}" ${HOST}-clang || true
+    #ln -s "${CXX}" ${HOST}-clang || true
     # For ltcg we cannot use libtool (or at least not the macOS 10.9 system one) due to lack of LLVM bitcode support.
     #ln -s "${LIBTOOL}" libtool || true
     # Just in-case our strip is better than the system one.
     #ln -s "${STRIP}" strip || true
     #chmod +x ${HOST}-clang libtool strip
-    chmod +x ${HOST}-clang
+    #chmod +x ${HOST}-clang
     # Qt passes clang flags to LD (e.g. -stdlib=c++)
     export LD=${CXX}
     PATH=${PWD}:${PATH}
@@ -196,6 +198,12 @@ if [[ ${HOST} =~ .*darwin.* ]]; then
       fi
     fi
 
+    echo ''
+    echo 'Environ...'
+    env | sort
+    echo ''
+
+    echo 'Configuring...'
     ./configure -prefix $PREFIX \
                 -libdir $PREFIX/lib \
                 -bindir $PREFIX/bin \
