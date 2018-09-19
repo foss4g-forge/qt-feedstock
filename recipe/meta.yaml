@@ -27,6 +27,9 @@ source:
       - 0016-qtbase-use-better-gcc-optimize-size.patch
       - 0017-qtbase-never-enable-new-dtags.patch
       - 0018-qtbase-Add-DISABLE_WINRT_DEPRECATION-for-WinSDK-10.0.16299.0.patch
+      # qtlocation
+      # https://bugreports.qt.io/browse/QTBUG-67810
+      - 0019-qtlocation-mapbox-QTBUG-67810.patch
       # qtwinextras
       - 0001-shobjidl-Fix-compile-guard-around-SHARDAPPIDINFOLINK.patch  # [win]
       # qtwebengine
@@ -40,6 +43,8 @@ source:
       # https://www.imperialviolet.org/2016/06/26/nonnull.html
       - 0007-qtwebengine-boringssl-Work-around-language-and-compiler-bug-in-memcpy-etc.patch
       - 0008-qtwebengine-Allow-build-to-proceed-on-macOS-10-9.patch
+      # https://bugs.chromium.org/p/chromium/issues/detail?id=684590
+      - 0009-qtwebengine-chromium-certificate-mac.patch
       # qtgamepad
       - 0001-qtgamepad-maybe-define-BTN_TRIGGER_HAPPY1-to-4.patch
       # qtscript

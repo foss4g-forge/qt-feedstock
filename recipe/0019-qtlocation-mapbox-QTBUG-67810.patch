@@ -1,0 +1,30 @@
+From 959a71ddb15c7dbfcc74cb56aa9a4537e3aaeff0 Mon Sep 17 00:00:00 2001
+From: Allan Sandfeld Jensen <allan.jensen@qt.io>
+Date: Tue, 20 Mar 2018 15:57:02 +0100
+Subject: [PATCH] Fix build with clang
+
+The code uses both deprecated C++98 std::auto_ptr and C++14 TR std::experimental::optional and
+thus depends rather heavily on being compiled with an exact C++ version.
+
+Change-Id: I65329393f9190ab35675c30a2294c3651f41399c
+Reviewed-by: Bruno de Oliveira Abinader <brunoabinader@gmail.com>
+Reviewed-by: Thiago Marcos P. Santos <tmpsantos@gmail.com>
+Reviewed-by: Alex Blasche <alexander.blasche@qt.io>
+---
+ qtlocation/src/3rdparty/mapbox-gl-native/mapbox-gl-native.pro | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/qtlocation/src/3rdparty/mapbox-gl-native/mapbox-gl-native.pro b/qtlocation/src/3rdparty/mapbox-gl-native/mapbox-gl-native.pro
+index a9a7a4d65..680f0b50b 100644
+--- a/qtlocation/src/3rdparty/mapbox-gl-native/mapbox-gl-native.pro
++++ b/qtlocation/src/3rdparty/mapbox-gl-native/mapbox-gl-native.pro
+@@ -3,6 +3,7 @@ TARGET = qmapboxgl
+ load(qt_helper_lib)
+
+ CONFIG += qt c++14 exceptions warn_off staticlib object_parallel_to_source
++CONFIG -= c++1z
+
+ QT += network-private \
+       gui-private \
+--
+2.16.3

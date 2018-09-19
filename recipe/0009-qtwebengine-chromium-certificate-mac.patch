@@ -1,0 +1,13 @@
+diff --git a/qtwebengine/src/3rdparty/chromium/net/cert/x509_certificate_mac.cc b/qtwebengine/src/3rdparty/chromium/net/cert/x509_certificate_mac.cc
+index 6283d36..2686640 100644
+--- a/qtwebengine/src/3rdparty/chromium/net/cert/x509_certificate_mac.cc
++++ b/qtwebengine/src/3rdparty/chromium/net/cert/x509_certificate_mac.cc
+@@ -76,7 +76,7 @@
+ void GetCertDateForOID(const x509_util::CSSMCachedCertificate& cached_cert,
+                        const CSSM_OID* oid,
+                        Time* result) {
+-  *result = Time::Time();
++  *result = Time();
+
+   x509_util::CSSMFieldValue field;
+   OSStatus status = cached_cert.GetField(oid, &field);
