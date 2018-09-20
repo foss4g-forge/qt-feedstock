@@ -90,7 +90,6 @@ requirements:
   build:
     - {{ compiler('cxx') }}              # [not win]
     - {{ compiler('c') }}                # [not win]
-    - anaconda-env                       # [osx]
     - vs2017_win-64                      # [win64]
     - vs2017_win-32                      # [win32]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
@@ -230,3 +229,4 @@ extra:
     - msarahan
     - ocefpaf
     - stuarteberg
+    - dakcarto
