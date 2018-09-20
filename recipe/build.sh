@@ -171,6 +171,11 @@ fi
 
 if [[ $(uname) == Darwin ]]; then
 
+    # Note: for 10.11 SDK to be 'discoverable' compiler environ should match Travis CI's:
+    #       osx_image:xcode6.4 = Xcode 6.4     OSX 10.10
+    #       osx_image:xcode7.3 = Xcode 7.3.1   OSX 10.11 (recommended)
+    # Using conda-forge clang 6.0.1 or Xcode 6.2 will fail to fully configure
+
     # Avoid Xcode
     cp "${RECIPE_DIR}"/xcrun .
     cp "${RECIPE_DIR}"/xcodebuild .
@@ -210,6 +215,7 @@ if [[ $(uname) == Darwin ]]; then
                 -headerdir $PREFIX/include/qt \
                 -archdatadir $PREFIX \
                 -datadir $PREFIX \
+                -c++std c++14 \
                 -L $PREFIX/lib \
                 -I $PREFIX/include \
                 -R $PREFIX/lib \
