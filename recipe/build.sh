@@ -39,7 +39,7 @@ fi
 # grep -R include_dirs . | grep ninja | grep    _h_env_ | cut -d':' -f 1 | sort | uniq | xargs stat -c "%s %n" 2>/dev/null | sort -h | head -n 10
 # Then find the .gn or .gni files that these ninja files were created from and figure out wtf is going on.
 
-if [[ ${HOST} =~ .*linux.* ]]; then
+if [[ $(uname) == Linux ]]; then
 
     if ! which ruby > /dev/null 2>&1; then
         echo "You need ruby to build qtwebkit"
@@ -169,7 +169,7 @@ if [[ ${HOST} =~ .*linux.* ]]; then
     make install
 fi
 
-if [[ ${HOST} =~ .*darwin.* ]]; then
+if [[ $(uname) == Darwin ]]; then
 
     # Avoid Xcode
     cp "${RECIPE_DIR}"/xcrun .
@@ -276,7 +276,7 @@ popd > /dev/null
 # Add qt.conf file to the package to make it fully relocatable
 cp "${RECIPE_DIR}"/qt.conf "${PREFIX}"/bin/
 
-if [[ ${HOST} =~ .*darwin.* ]]; then
+if [[ $(uname) == Darwin ]]; then
     # We built Qt itself with SDK 10.10, but we shouldn't
     # force users to also build their Qt apps with SDK 10.10
     # https://bugreports.qt.io/browse/QTBUG-41238
