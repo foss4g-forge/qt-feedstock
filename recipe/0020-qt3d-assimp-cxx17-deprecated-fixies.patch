@@ -1,0 +1,93 @@
+diff --git a/qt3d/src/3rdparty/assimp/code/BlenderModifier.cpp b/qt3d/src/3rdparty/assimp/code/BlenderModifier.cpp
+index 24aed25..5f11ddf 100644
+--- a/qt3d/src/3rdparty/assimp/code/BlenderModifier.cpp
++++ b/qt3d/src/3rdparty/assimp/code/BlenderModifier.cpp
+@@ -265,7 +265,7 @@ void  BlenderModifier_Mirror :: DoIt(aiNode& out, ConversionData& conv_data,  co
+ 
+     std::copy(out.mMeshes,out.mMeshes+out.mNumMeshes,nind);
+     std::transform(out.mMeshes,out.mMeshes+out.mNumMeshes,nind+out.mNumMeshes,
+-        std::bind1st(std::plus< unsigned int >(),out.mNumMeshes));
++        std::bind(std::plus< unsigned int >(),out.mNumMeshes,std::placeholders::_1));
+ 
+     delete[] out.mMeshes;
+     out.mMeshes = nind;
+diff --git a/qt3d/src/3rdparty/assimp/code/FBXDocument.cpp b/qt3d/src/3rdparty/assimp/code/FBXDocument.cpp
+index cf5f6da..7215acb 100644
+--- a/qt3d/src/3rdparty/assimp/code/FBXDocument.cpp
++++ b/qt3d/src/3rdparty/assimp/code/FBXDocument.cpp
+@@ -574,7 +574,7 @@ std::vector<const Connection*> Document::GetConnectionsSequenced(uint64_t id,
+         temp.push_back((*it).second);
+     }
+ 
+-    std::sort(temp.begin(), temp.end(), std::mem_fun(&Connection::Compare));
++    std::sort(temp.begin(), temp.end(), std::mem_fn(&Connection::Compare));
+ 
+     return temp; // NRVO should handle this
+ }
+@@ -626,7 +626,7 @@ std::vector<const Connection*> Document::GetConnectionsSequenced(uint64_t id, bo
+         temp.push_back((*it).second);
+     }
+ 
+-    std::sort(temp.begin(), temp.end(), std::mem_fun(&Connection::Compare));
++    std::sort(temp.begin(), temp.end(), std::mem_fn(&Connection::Compare));
+     return temp; // NRVO should handle this
+ }
+ 
+diff --git a/qt3d/src/3rdparty/assimp/code/FBXMeshGeometry.cpp b/qt3d/src/3rdparty/assimp/code/FBXMeshGeometry.cpp
+index e9d8391..47d0996 100644
+--- a/qt3d/src/3rdparty/assimp/code/FBXMeshGeometry.cpp
++++ b/qt3d/src/3rdparty/assimp/code/FBXMeshGeometry.cpp
+@@ -356,7 +356,7 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
+         // avoids losing the material if there are more material layers
+         // coming of which at least one contains actual data (did observe
+         // that with one test file).
+-        const size_t count_neg = std::count_if(temp_materials.begin(),temp_materials.end(),std::bind2nd(std::less<int>(),0));
++        const size_t count_neg = std::count_if(temp_materials.begin(),temp_materials.end(),std::bind(std::less<int>(),std::placeholders::_1,0));
+         if(count_neg == temp_materials.size()) {
+             FBXImporter::LogWarn("ignoring dummy material layer (all entries -1)");
+             return;
+diff --git a/qt3d/src/3rdparty/assimp/code/LWOAnimation.cpp b/qt3d/src/3rdparty/assimp/code/LWOAnimation.cpp
+index 9f23c13..a5746d8 100644
+--- a/qt3d/src/3rdparty/assimp/code/LWOAnimation.cpp
++++ b/qt3d/src/3rdparty/assimp/code/LWOAnimation.cpp
+@@ -162,7 +162,7 @@ void AnimResolver::UpdateAnimRangeSetup()
+                 {
+                 const double start_time = delta - fmod(my_first-first,delta);
+                 std::vector<LWO::Key>::iterator n = std::find_if((*it).keys.begin(),(*it).keys.end(),
+-                    std::bind1st(std::greater<double>(),start_time)),m;
++                    std::bind(std::greater<double>(),start_time,std::placeholders::_1)),m;
+ 
+                 size_t ofs = 0;
+                 if (n != (*it).keys.end()) {
+diff --git a/qt3d/src/3rdparty/assimp/code/OgreParsingUtils.h b/qt3d/src/3rdparty/assimp/code/OgreParsingUtils.h
+index def3cf7..f17a684 100644
+--- a/qt3d/src/3rdparty/assimp/code/OgreParsingUtils.h
++++ b/qt3d/src/3rdparty/assimp/code/OgreParsingUtils.h
+@@ -90,11 +90,11 @@ static inline std::string &TrimLeft(std::string &s, bool newlines = true)
+ {
+     if (!newlines)
+     {
+-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(Assimp::IsSpace<char>))));
++        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char c) {return !Assimp::IsSpace(c);}));
+     }
+     else
+     {
+-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(Assimp::IsSpaceOrNewLine<char>))));
++        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char c) {return !Assimp::IsSpaceOrNewLine(c);}));
+     }
+     return s;
+ }
+@@ -104,11 +104,11 @@ static inline std::string &TrimRight(std::string &s, bool newlines = true)
+ {
+     if (!newlines)
+     {
+-        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun(Assimp::IsSpace<char>))).base(),s.end());
++        s.erase(std::find_if(s.rbegin(), s.rend(), [](char c) {return !Assimp::IsSpace(c);}).base(),s.end());
+     }
+     else
+     {
+-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun(Assimp::IsSpaceOrNewLine<char>))));
++        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char c) {return !Assimp::IsSpaceOrNewLine(c);}));
+     }
+     return s;
+ }
