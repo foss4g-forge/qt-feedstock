@@ -202,9 +202,11 @@ test:
     - {{ cdt('libxxf86vm') }}            # [linux]
   files:
     - test/hello.pro
-    - test/main.cpp
     - test/main-qtwebengine.cpp
-    - test/qml.cpp
+    - test/main.cpp
+    - test/main.qml
+    - test/qml.qrc
+    - test/qrc_qml.cpp
     - test/qtwebengine.pro
     - xcodebuild
     - xcrun
