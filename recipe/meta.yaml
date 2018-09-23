@@ -83,6 +83,7 @@ build:
   run_exports:
     - {{ pin_subpackage('qt', max_pin='x.x') }}
   missing_dso_whitelist:  # [osx]
+    - /usr/lib/libc++.1.dylib  # [osx]
     - /usr/lib/libbsm.0.dylib  # [osx]
     - /usr/lib/libcups.2.dylib  # [osx]
     - /usr/lib/libresolv.9.dylib  # [osx]
