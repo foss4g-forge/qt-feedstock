@@ -51,7 +51,7 @@ source:
       - 0001-qtscript-mark-cti_vm_throw-as-REFERENCED_FROM_ASM.patch
       # qt3d
       # https://bugreports.qt.io/browse/QTBUG-67606 (apparently not going to be in 5.9.7?)
-      # Building with '-c++std c++14' *should* allow patch to be applied or not (deprecations removed in c++17), 
+      # Building with '-c++std c++14' *should* allow patch to be applied or not (deprecations removed in c++17),
       # and help with 0019-qtlocation-mapbox-QTBUG-67810 needing c++14. Incompatible with c++11.
       - 0020-qt3d-assimp-cxx17-deprecated-fixies.patch
 
@@ -172,6 +172,7 @@ requirements:
   run:
     - openssl 1.0.*                      # [not osx]
     - libxcb                             # [linux]
+    - icu                                # [osx]
 
 test:
   requires:
