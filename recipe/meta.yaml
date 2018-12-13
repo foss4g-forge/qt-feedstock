@@ -1,22 +1,19 @@
-{% set version = "5.9.6" %}
+{% set version = "5.9.7" %}
 
 package:
   name: qt
   version: {{ version }}
 
 source:
+#  - git_url: git://code.qt.io/qt/qt5.git
+#    git_tag: v5.9.7
   - url: http://download.qt.io/official_releases/qt/5.9/{{ version }}/single/qt-everywhere-opensource-src-{{ version }}.tar.xz  # [not win]
-    md5: a427428c65f35909ef6ae865b8ee0da6  # [not win]
+    md5: 70e617aeb1f9bbf84a12b8cf09b01ece  # [not win]
   - url: http://download.qt.io/official_releases/qt/5.9/{{ version }}/single/qt-everywhere-opensource-src-{{ version }}.zip  # [win]
-    md5: a06dcc454bbaaeba5c8f25bc6d4b7a91  # [win]
+    md5: 98102a8e9eefa2f05ecaa9a349c414d4  # [win]
     patches:
-      # Spyder ran into this: https://codereview.qt-project.org/#/c/233482/
-      # https://github.com/spyder-ide/spyder/issues/7693
-      - 0000-Revert-Fix-restoring-geometry-of-dockwidget.patch
-      # Moved elsewhere now it seems?
-      # - 0008-disable-Ubuntu-overlay-scrollbars-as-they-don-t-play.patch
       # qtbase
-      - 0000-Fix-MSVC2017-compilation-with-enabled-relaxed-constexpr-on-32-bit-target.patch
+      - 0000-qtbase-QSslSocket-OpenSSL-1.1-backend.patch
       - 0010-osx-xctest-check.patch
       - 0011-osx-allow-any-xcrun-in-PATH.patch
       # - 0012-qtbase-Set-QMAKE_MACOSX_DEPLOYMENT_TARGET-in-all-mac.patch
@@ -27,6 +24,8 @@ source:
       - 0016-qtbase-use-better-gcc-optimize-size.patch
       - 0017-qtbase-never-enable-new-dtags.patch
       - 0018-qtbase-Add-DISABLE_WINRT_DEPRECATION-for-WinSDK-10.0.16299.0.patch
+      # - 0019-qtbase-Hack-static-extension-onto-libs-for-qtlibinfix-on-Windows.patch
+      - 0020-qtbase-qmake-remove-qtlibinfix-from-libname-before-finding-prl.patch  # [win]
       # qtlocation
       # https://bugreports.qt.io/browse/QTBUG-67810
       - 0019-qtlocation-mapbox-QTBUG-67810.patch
@@ -49,11 +48,6 @@ source:
       - 0001-qtgamepad-maybe-define-BTN_TRIGGER_HAPPY1-to-4.patch
       # qtscript
       - 0001-qtscript-mark-cti_vm_throw-as-REFERENCED_FROM_ASM.patch
-      # qt3d
-      # https://bugreports.qt.io/browse/QTBUG-67606 (apparently not going to be in 5.9.7?)
-      # Building with '-c++std c++14' *should* allow patch to be applied or not (deprecations removed in c++17),
-      # and help with 0019-qtlocation-mapbox-QTBUG-67810 needing c++14. Incompatible with c++11.
-      - 0020-qt3d-assimp-cxx17-deprecated-fixies.patch
 
   - url: http://download.qt.io/community_releases/5.9/5.9.0-final/qtwebkit-opensource-src-5.9.0.tar.xz            # [qtwebkit == 'true']
     sha256: 8dad193b740055a998312e04a040f2e32a923c0823b2d239b24eab08276a4e04                                      # [qtwebkit == 'true']
@@ -75,7 +69,7 @@ source:
     folder: opengl32sw                                                                                            # [win64]
 
 build:
-  number: 4
+  number: 0
   skip: True  # [win and vc != 14]
   detect_binary_files_with_prefix: true
   # QtWebEngine fails on Linux unless we merge
@@ -123,10 +117,12 @@ requirements:
     - {{ cdt('libxfixes') }}             # [linux]
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
+    - {{ cdt('cups-devel') }}            # [linux]
 
     # For fontconfig + freetype
     - pkg-config                         # [linux]
     - pthread-stubs                      # [linux]
+    - make                               # [unix]
     # Probably only needed for WebEngine
     - python 2.7*
     - ninja
@@ -137,6 +133,7 @@ requirements:
     - m2-gperf                           # [win]
     - m2-bison                           # [win]
     - m2-flex                            # [win]
+    - m2-patch                           # [win]
     - jom                                # [win]
     - perl 5.*
   host:
@@ -168,11 +165,11 @@ requirements:
     - libxcb                             # [linux]
     # We cannot install OpenSSL into the prefix when building qtwebengine
     # on linux as BoringSSL and OpenSSL then conflict with each other.
-    - openssl 1.0.*                      # [win]
+    - openssl 1.1.*                      # [win]
   run:
-    - openssl 1.0.*                      # [not osx]
+    - openssl 1.1.*                      # [not osx]
     - libxcb                             # [linux]
-    - icu                                # [osx]
+    - icu
 
 test:
   requires:
@@ -213,7 +210,7 @@ test:
     - xcodebuild
     - xcrun
   commands:
-    - if not exist %LIBRARY_BIN%\\Qt5WebEngine.dll exit 1                  # [win]
+    - if not exist %LIBRARY_BIN%\\Qt5WebEngine_conda.dll exit 1            # [win]
     - test -f $PREFIX/lib/libQt5WebEngine.so                               # [linux]
     - test -f $PREFIX/lib/libQt5WebEngine.dylib                            # [osx]
     # sql plugin
