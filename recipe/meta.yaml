@@ -169,7 +169,7 @@ requirements:
     - libxcb                             # [linux]
     # We cannot install OpenSSL into the prefix when building qtwebengine
     # on linux as BoringSSL and OpenSSL then conflict with each other.
-    - openssl                            # [win]
+    - openssl                            # [not linux]
     # For QDoc
     # http://doc.qt.io/Qt-5/qdoc-guide-clang.html
     # Only libclang is needed, but needs the full package for detection.
@@ -177,7 +177,7 @@ requirements:
     - clangdev
     - libclang
   run:
-    - openssl                            # [not osx]
+    - openssl                            # [not linux]
     - libxcb                             # [linux]
     - {{ pin_compatible("nss") }}        # [unix]
     - {{ pin_compatible("nspr") }}       # [unix]
